@@ -2,9 +2,9 @@
  *                Using the Promise constructor                   *
  ******************************************************************/
 
-var fs = require('fs');
-var request = require('request');
-var Promise = require('bluebird');
+ var fs = require('fs');
+ var request = require('request');
+ var Promise = require('bluebird');
 
 // There are five steps to writing a promise returning function:
 //   (1) Create a promise with the `new Promise` constructor
@@ -28,11 +28,28 @@ var Promise = require('bluebird');
 // This function should retrieve the first line of the file at `filePath`
 var pluckFirstLineFromFileAsync = function (filePath) {
   // TODO
+  var promise = new Promise(function(resolve, reject) {
+    fs.readFile(filePath, 'utf8', function(err, content) {
+      if (err) reject(err);
+      if (content) var firstLine = content.split('\n')[0];
+      resolve(firstLine);
+    })
+  });
+
+  return promise;
 };
 
 // This function should retrieve the status code of a GET request to `url`
 var getStatusCodeAsync = function (url) {
   // TODO
+  var promise = new Promise(function(resolve, reject) {
+    request(url, function(err, res, body) {
+      if (err) reject(err);
+      if (res) var statusCode = res.statusCode;
+      resolve(statusCode);
+    });
+  })
+  return promise;
 };
 
 // Export these functions so we can unit test them

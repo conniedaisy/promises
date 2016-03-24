@@ -2,9 +2,9 @@
  *                     Promise Chaining                           *
  ******************************************************************/
 
-var fs = require('fs');
-var Promise = require('bluebird');
-var db = require('../../lib/db');
+ var fs = require('fs');
+ var Promise = require('bluebird');
+ var db = require('../../lib/db');
 
 // Remember the pyramid of doom?
 
@@ -61,17 +61,17 @@ var addNewUserToDatabaseAsync = function(user) {
   // The outermost `return` lets us continue the chain
   // after an invocation of `addNewUserToDatabaseAsync`
   return db.findUserInDatabaseAsync(user)
-    .then(function(existingUser) {
-      if (existingUser) {
+  .then(function(existingUser) {
+    if (existingUser) {
         throw new Error('User already exists!') // Head straight to `catch`. Do not pass Go, do not collect $200
       } else {
         return user; // Return a syncronous value
       }
     })
-    .then(function(newUser) {
+  .then(function(newUser) {
       return db.hashPasswordAsync(newUser) // Return a promise
     })
-    .then(function(securedUser) {
+  .then(function(securedUser) {
       return db.createAndSaveUserAsync(securedUser) // Return another promise
     })
 }
@@ -79,14 +79,14 @@ var addNewUserToDatabaseAsync = function(user) {
 // Uncomment the lines below and run the example with `node exercises/bare_minimum/chaining.js`
 // It will succeed most of the time, but fail occasionally to demonstrate error handling
 
-// addNewUserToDatabaseAsync({ name: 'Dan', password: 'chickennuggets' })
-//   .then(function(savedUser) {
-//     console.log('All done!')
-//   })
-//   .catch(function(err) {
-//     // Will catch any promise rejections or thrown errors in the chain!
-//     console.log('Oops, caught an error: ', err.message)
-//   });
+addNewUserToDatabaseAsync({ name: 'Dan', password: 'chickennuggets' })
+.then(function(savedUser) {
+  console.log('All done!')
+})
+.catch(function(err) {
+    // Will catch any promise rejections or thrown errors in the chain!
+    console.log('Oops, caught an error: ', err.message)
+  });
 
 /******************************************************************
  *                         Exercises                              *
@@ -102,10 +102,15 @@ var addNewUserToDatabaseAsync = function(user) {
 var pluckFirstLineFromFileAsync = require('./promiseConstructor').pluckFirstLineFromFileAsync;
 var getGitHubProfileAsync = require('./promisification').getGitHubProfileAsync
 
-
-
 var fetchProfileAndWriteToFile = function(readFilePath, writeFilePath) {
   // TODO
+  return pluckFirstLineFromFileAsync(readFilePath)
+  .then(getGitHubProfileAsync)
+  .then(function(githubProfile) {
+    console.log(writeFilePath);
+    console.log(githubProfile);
+    fs.writeFileSync(writeFilePath, JSON.stringify(githubProfile));
+  });
 };
 
 module.exports = {

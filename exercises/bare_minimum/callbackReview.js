@@ -2,8 +2,8 @@
  *                 Node style callback pattern                    *
  ******************************************************************/
 
-var fs = require('fs');
-var request = require('request');
+ var fs = require('fs');
+ var request = require('request');
 
 // Before moving onto promises, it's important to review callbacks.
 
@@ -36,17 +36,23 @@ var request = require('request');
 // This function should retrieve the first line of the file at `filePath`
 // HINT: Passing 'utf8' as the second argument to fs.readFile will give you a stringified file
 // HINT: You can get an array of lines by splitting on the '\n' character
-var pluckFirstLineFromFile = function (filePath
-) {
-  // YOUR CODE HERE
+var pluckFirstLineFromFile = function (filePath, cb) {
+  fs.readFile(filePath, 'utf8', function(err, content) {
+    if (content) var firstLine = content.split('\n')[0];
+    console.log(firstLine);
+    cb(err, firstLine);
+  });
 };
 
 // This function should retrieve the status code of a GET request to `url`
 // HINT: the `request` module has been included to help you send HTTP requests
 // HINT: there is a `statusCode` property on the `response` object
-var getStatusCode = function (url
-) {
+var getStatusCode = function (url, cb) {
   // YOUR CODE HERE
+  request(url, function(err, res, body) {
+    if (res) var statusCode = res.statusCode;
+    cb(err, statusCode);
+  });
 };
 
 // Export these functions so we can unit test them

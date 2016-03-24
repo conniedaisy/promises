@@ -23,6 +23,7 @@ describe('Bare Minimum', function() {
 
       it('should invoke the callback with an error as the first argument', function(done) {
         pluckFirstLineFromFile(__dirname + '/files/nonexistent_file.txt', function(err, firstLine) {
+          console.log(err.code);
           expect(err.code).to.equal('ENOENT');
           expect(firstLine).to.not.exist;
           done();
