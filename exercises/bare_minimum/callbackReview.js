@@ -39,7 +39,6 @@
 var pluckFirstLineFromFile = function (filePath, cb) {
   fs.readFile(filePath, 'utf8', function(err, content) {
     if (content) var firstLine = content.split('\n')[0];
-    console.log(firstLine);
     cb(err, firstLine);
   });
 };

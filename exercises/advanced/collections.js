@@ -2,8 +2,9 @@
  *          Handling collections with Promise.all                 *
  ******************************************************************/
 
-var Promise = require('bluebird');
-var asyncLib = require('../../lib/asyncLib.js');
+ var Promise = require('bluebird');
+ var asyncLib = require('../../lib/asyncLib.js');
+ var fs = require('fs');
 
 /**
  * A common asyncronous pattern:
@@ -22,17 +23,17 @@ var asyncLib = require('../../lib/asyncLib.js');
  * then continue to the exercises when you're ready
  */
 
-// Promise.all([
-//   asyncLib.getValueA(),
-//   asyncLib.getValueB(),
-//   asyncLib.getValueC(),
-//   asyncLib.getValueD()
-// ])
-// .then(asyncLib.logResolvedValues)
-// .then(asyncLib.filterValuesFromCollection)
-// .then(asyncLib.doMoreAsyncWorkWithFilteredValues)
-// // `bind` sets correct context when using console.log as a callback
-// .catch(console.log.bind(console));
+ Promise.all([
+  asyncLib.getValueA(),
+  asyncLib.getValueB(),
+  asyncLib.getValueC(),
+  asyncLib.getValueD()
+  ])
+ .then(asyncLib.logResolvedValues)
+ .then(asyncLib.filterValuesFromCollection)
+ .then(asyncLib.doMoreAsyncWorkWithFilteredValues)
+// `bind` sets correct context when using console.log as a callback
+.catch(console.log.bind(console));
 
 
 /******************************************************************
@@ -57,9 +58,44 @@ var asyncLib = require('../../lib/asyncLib.js');
   *     // the new file has been successfully written
   *   })
   */
+  var pluckFirstLineFromFileAsync = require('../bare_minimum/promiseConstructor').pluckFirstLineFromFileAsync;
+
+  readFilePromise = Promise.promisify(fs.readFile);
+  var joinLines = function(lines) {
+    var promise = new Promise(function(resolve, reject) {
+      var retVal = lines.join('\n');
+      // var retVal = lines.split('\n')[0];
+      resolve(retVal);
+    });
+    return promise;
+  };
+
+
 
 var combineFirstLineOfManyFiles = function (filePaths, writePath) {
- // YOUR CODE HERE
+  // YOUR CODE HERE
+  return Promise.all(
+    // get first line
+    filePaths.map(function(path) {
+      return pluckFirstLineFromFileAsync(path);
+    }) //return an array of first line from each file
+  )
+  .then(joinLines)
+  .then(function(content) {
+    fs.writeFile(writePath, content);
+  });
+
+//  return Promise.all(filePaths.map(function(path) {
+//   return readFilePromise(path);
+// }))
+//  .then(Promise.all(function(files) {
+//   return files.map(function(file) {return pluckFirstLineFromFileAsync(file)});
+// }()))
+//  .then(joinLines)
+//  .then(function(content) {
+//   fs.writeFile(writePath, content);
+// });
+
 };
 
 // Export these functions so we can unit test them
