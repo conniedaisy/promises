@@ -84,18 +84,6 @@ var combineFirstLineOfManyFiles = function (filePaths, writePath) {
   .then(function(content) {
     fs.writeFile(writePath, content);
   });
-
-//  return Promise.all(filePaths.map(function(path) {
-//   return readFilePromise(path);
-// }))
-//  .then(Promise.all(function(files) {
-//   return files.map(function(file) {return pluckFirstLineFromFileAsync(file)});
-// }()))
-//  .then(joinLines)
-//  .then(function(content) {
-//   fs.writeFile(writePath, content);
-// });
-
 };
 
 // Export these functions so we can unit test them

@@ -2,8 +2,8 @@
  *                  Advanced Promise Chaining                     *
  ******************************************************************/
 
-var Promise = require('bluebird');
-var lib = require('../../lib/advancedChainingHelpers.js');
+ var Promise = require('bluebird');
+ var lib = require('../../lib/advancedChainingHelpers.js');
 
 /**
  * Your task is to write a function that uses a deep learning
@@ -51,9 +51,18 @@ var lib = require('../../lib/advancedChainingHelpers.js');
 // Visit the following url to sign up for a free account
 //     https://developer.clarifai.com/accounts/login/?next=/applications/
 // Then, create a new Application and pass your Client Id and Client Secret into the method below
-lib.setImageTaggerCredentials('YOUR_CLIENT_ID', 'YOUR_CLIENT_SECRET')
+lib.setImageTaggerCredentials('tiNJ69fI08N0boQsei2EGkdR43bns_D2QOO-dDZ2', 'xbO8mOmFn50srC2IJSgToQ29mwTsA6srH975KAo-')
+var token = lib.authenticateImageTagger();
 
 var searchCommonTagsFromGitHubProfiles = function(githubHandles) {
+  return Promise.all(
+    githubHandles.map(function(handle) {
+      return lib.getGitHubProfile(handle)   
+      .then(function(profile) {
+        return lib.tagImage(profile.avatarUrl, token); 
+      })
+    })
+  );
 };
 
 // Export these functions so we can unit test them
